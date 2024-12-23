@@ -41,3 +41,6 @@ build/
 .env
 .env.local
 .env.production
+
+### Uploaded Files ###
+uploads/

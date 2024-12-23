@@ -5,17 +5,33 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="19b800e0-3974-4545-804d-0c918de491c5" name="Changes" comment="first commit">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/App.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/auth/controller/AuthController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/auth/dao/AuthDAO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/auth/middleware/JwtAuthMiddleware.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/auth/model/Auth.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/auth/service/AuthService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/auth/util/JwtUtil.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/utility/database/DatabaseConnection.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/controller/MediaFileController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/controller/SubjectController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/controller/UserController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/dao/MediaFileDAO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/dao/SubjectDAO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/dao/UserDAO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/model/MediaFile.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/model/MediaFileDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/model/Subject.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/model/User.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/model/UserRole.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/service/MediaFileService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/service/SubjectService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/service/UserService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/utility/ApiCall.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/uploads/21-01-2023.MP4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/uploads/IEMI4.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/uploads/Login.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/uploads/Open Wikipedia.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/uploads/OrtoPlan.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/uploads/Pokedex Manager.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/uploads/Sperimentale_ EduHub.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/App.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,6 +41,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Enum" />
+        <option value="Interface" />
         <option value="Class" />
       </list>
     </option>
@@ -44,6 +62,9 @@
     &quot;accountId&quot;: &quot;43ebe5dc-5d2e-4e7b-9ce8-a9b55dd943a4&quot;
   }
 }</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="DEPENDENCY_CHECKER_PROBLEMS_TAB" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 4
 }</component>
@@ -55,18 +76,37 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;Application.App.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SONARLINT_PRECOMMIT_ANALYSIS&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Application.ApiCall.executor": "Run",
+    "Application.App.executor": "Debug",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SONARLINT_PRECOMMIT_ANALYSIS": "true",
+    "git-widget-placeholder": "develop",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true"
   }
-}</component>
-  <component name="RunManager">
+}]]></component>
+  <component name="RecentsManager">
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="com.berghella.daniele.edu_hub.utility" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.App">
+    <configuration name="ApiCall" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.berghella.daniele.edu_hub.utility.ApiCall" />
+      <module name="EduHub" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.berghella.daniele.edu_hub.utility.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="App" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.berghella.daniele.edu_hub.App" />
       <module name="EduHub" />
@@ -83,6 +123,7 @@
     <recent_temporary>
       <list>
         <item itemvalue="Application.App" />
+        <item itemvalue="Application.ApiCall" />
       </list>
     </recent_temporary>
   </component>
@@ -109,5 +150,16 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="first commit" />
     <option name="LAST_COMMIT_MESSAGE" value="first commit" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/dao/MediaFileDAO.java</url>
+          <line>30</line>
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
