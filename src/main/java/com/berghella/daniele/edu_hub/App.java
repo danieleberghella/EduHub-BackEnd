@@ -37,5 +37,11 @@ public class App {
 
         EnrollmentController enrollmentController = new EnrollmentController();
         enrollmentController.registerRoutes(app);
+
+        AttendanceController attendanceController = new AttendanceController();
+        attendanceController.registerRoutes(app);
+
+        MessageController messageController = new MessageController();
+        messageController.registerRoutes(app);
     }
 }

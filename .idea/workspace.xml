@@ -5,13 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="19b800e0-3974-4545-804d-0c918de491c5" name="Changes" comment="first commit">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/controller/EnrollmentController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/dao/EnrollmentDAO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/service/EnrollmentService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/controller/AttendanceController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/controller/MessageController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/dao/AttendanceDAO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/dao/MessageDAO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/model/AttendanceDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/model/Message.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/model/MessageDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/service/AttendanceService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/service/MessageService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/App.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/controller/SubjectController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/controller/SubjectController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/controller/TestController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/controller/TestController.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -130,5 +134,16 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="first commit" />
     <option name="LAST_COMMIT_MESSAGE" value="first commit" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/controller/MessageController.java</url>
+          <line>42</line>
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
