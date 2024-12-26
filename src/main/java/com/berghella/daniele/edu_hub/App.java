@@ -34,5 +34,8 @@ public class App {
 
         TestController testController = new TestController();
         testController.registerRoutes(app);
+
+        EnrollmentController enrollmentController = new EnrollmentController();
+        enrollmentController.registerRoutes(app);
     }
 }

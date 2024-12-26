@@ -67,7 +67,7 @@ public class TestController {
             }
 
         } catch (Exception e) {
-            ctx.status(HttpStatus.BAD_REQUEST).result("Invalid request")
+            ctx.status(HttpStatus.BAD_REQUEST).result("Invalid request");
         }
     }
 

@@ -5,38 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="19b800e0-3974-4545-804d-0c918de491c5" name="Changes" comment="first commit">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/controller/CourseController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/controller/TestController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/dao/AnswerDAO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/dao/CourseDAO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/dao/QuestionDAO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/dao/TestDAO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/model/Answer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/model/AnswerDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/model/Course.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/model/Question.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/model/QuestionDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/model/Test.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/model/TestDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/model/TestResults.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/model/TestResultsDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/service/AnswerService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/service/CourseService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/service/QuestionService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/service/TestService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/controller/EnrollmentController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/dao/EnrollmentDAO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/service/EnrollmentService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/App.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/auth/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/auth/controller/AuthController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/auth/dao/AuthDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/auth/dao/AuthDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/auth/middleware/JwtAuthMiddleware.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/auth/middleware/JwtAuthMiddleware.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/auth/service/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/auth/service/AuthService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/controller/MediaFileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/controller/MediaFileController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/controller/SubjectController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/controller/SubjectController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/controller/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/dao/MediaFileDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/dao/MediaFileDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/dao/SubjectDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/dao/SubjectDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/dao/UserDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/dao/UserDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/model/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/model/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/controller/TestController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/berghella/daniele/edu_hub/controller/TestController.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -85,7 +60,7 @@
   "keyToString": {
     "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "Application.ApiCall.executor": "Run",
-    "Application.App.executor": "Debug",
+    "Application.App.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SONARLINT_PRECOMMIT_ANALYSIS": "true",
     "git-widget-placeholder": "develop",

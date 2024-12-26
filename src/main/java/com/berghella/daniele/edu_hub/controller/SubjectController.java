@@ -12,7 +12,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class SubjectController {
-    private static SubjectService subjectService = new SubjectService();
+    private static final SubjectService subjectService = new SubjectService();
 
     public void registerRoutes(Javalin app) {
         // http://localhost:8000/subjects
