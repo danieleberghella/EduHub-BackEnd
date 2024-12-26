@@ -27,7 +27,7 @@ public class AuthDAO {
     }
 
     public Auth getAuthByEmail(String email){
-        String selectAuthByEmailSQL = "SELECT (id, user_id, email, password) FROM auth WHERE email = ?";
+        String selectAuthByEmailSQL = "SELECT * FROM auth WHERE email = ?";
         Auth auth = new Auth();
         try {
             PreparedStatement psSelectAuthByEmail = connection.prepareStatement(selectAuthByEmailSQL);
@@ -46,4 +46,5 @@ public class AuthDAO {
 
         return auth;
     }
+
 }

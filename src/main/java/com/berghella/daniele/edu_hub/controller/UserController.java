@@ -1,5 +1,7 @@
 package com.berghella.daniele.edu_hub.controller;
 
+import com.berghella.daniele.edu_hub.auth.middleware.JwtAuthMiddleware;
+import com.berghella.daniele.edu_hub.auth.service.AuthService;
 import com.berghella.daniele.edu_hub.model.User;
 import com.berghella.daniele.edu_hub.service.UserService;
 import io.javalin.Javalin;
@@ -12,25 +14,47 @@ import java.util.UUID;
 
 public class UserController {
     private static UserService userService = new UserService();
+    private static AuthService authService = new AuthService();
 
     public void registerRoutes(Javalin app) {
         // http://localhost:8000/users
-        app.post("/users", this::createUser);
+
+        app.before("/users/*", ctx -> {
+            new JwtAuthMiddleware().handle(ctx);
+            String email = ctx.attribute("email");
+            if (email == null) {
+                throw new io.javalin.http.UnauthorizedResponse("Unauthorized");
+            }
+        });
+        app.before("/users", ctx -> {
+            new JwtAuthMiddleware().handle(ctx);
+            String email = ctx.attribute("email");
+            if (email == null) {
+                throw new io.javalin.http.UnauthorizedResponse("Unauthorized");
+            }
+        });
+//        app.post("/users", this::createUser);
         app.get("/users", this::getAllUsers);
         app.get("/users/{id}", this::getUserById);
         app.put("/users/{id}", this::updateUserById);
         app.delete("/users/{id}", this::deleteUserById);
     }
 
-    private void createUser(Context ctx) {
-        try{
-            User newUser = ctx.bodyAsClass(User.class);
-            userService.createUser(newUser);
-            ctx.status(HttpStatus.CREATED).json(newUser.getId());
-        } catch (Exception e) {
-            ctx.status(HttpStatus.BAD_REQUEST).result("Invalid request");
-        }
-    }
+    // Possible to convert into Create New Profile  (more than one profile per account)
+//    private void createUser(Context ctx) {
+//    String email = ctx.attribute("email");
+//        if (email == null) {
+//        ctx.status(HttpStatus.UNAUTHORIZED).result("Unauthorized");
+//        return;
+//}
+//        try{
+//            User newUser = ctx.bodyAsClass(User.class);
+//            userService.createUser(newUser);
+//            ctx.status(HttpStatus.CREATED).json(newUser.getId());
+//        } catch (Exception e) {
+//            ctx.status(HttpStatus.BAD_REQUEST).result("Invalid request");
+//        }
+//    }
 
     private void getAllUsers(Context ctx) {
         try {

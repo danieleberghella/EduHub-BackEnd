@@ -1,5 +1,6 @@
 package com.berghella.daniele.edu_hub.controller;
 
+import com.berghella.daniele.edu_hub.auth.middleware.JwtAuthMiddleware;
 import com.berghella.daniele.edu_hub.model.Subject;
 import com.berghella.daniele.edu_hub.service.SubjectService;
 import io.javalin.Javalin;
@@ -15,6 +16,20 @@ public class SubjectController {
 
     public void registerRoutes(Javalin app) {
         // http://localhost:8000/subjects
+        app.before("/subjects", ctx -> {
+            new JwtAuthMiddleware().handle(ctx);
+            String email = ctx.attribute("email");
+            if (email == null) {
+                throw new io.javalin.http.UnauthorizedResponse("Unauthorized");
+            }
+        });
+        app.before("/subjects/*", ctx -> {
+            new JwtAuthMiddleware().handle(ctx);
+            String email = ctx.attribute("email");
+            if (email == null) {
+                throw new io.javalin.http.UnauthorizedResponse("Unauthorized");
+            }
+        });
         app.post("/subjects", this::createSubject);
         app.get("/subjects", this::getAllSubjects);
         app.get("/subjects/{id}", this::getSubjectById);

@@ -39,7 +39,8 @@ public class UserDAO {
                         rs.getString("first_name"),
                         rs.getString("last_name"),
                         rs.getString("email"),
-                        UserRole.valueOf(rs.getString("role")));
+                        UserRole.valueOf(rs.getString("role")),
+                        rs.getDate("birthdate").toLocalDate());
                 user.setId(UUID.fromString(rs.getString("id")));
                 users.add(user);
             }
@@ -60,7 +61,8 @@ public class UserDAO {
                         rs.getString("first_name"),
                         rs.getString("last_name"),
                         rs.getString("email"),
-                        UserRole.valueOf(rs.getString("role")));
+                        UserRole.valueOf(rs.getString("role")),
+                        rs.getDate("birthdate").toLocalDate());
                 user.setId(id);
                 return Optional.of(user);
             }
@@ -92,6 +94,11 @@ public class UserDAO {
                 parameters.add(updatedUser.getRole().toString());
             }
 
+            if (updatedUser.getBirthDate() != null) {
+                sql.append("birthdate = ?, ");
+                parameters.add(updatedUser.getBirthDate());
+            }
+
             sql.setLength(sql.length() - 2);
             sql.append(" WHERE id = ?");
             parameters.add(oldUserId);
@@ -117,7 +124,7 @@ public class UserDAO {
             int rowsAffected = psDeleteUser.executeUpdate();
             return rowsAffected > 0;
         } catch (SQLException e) {
-            throw new RuntimeException("Error while deleting user with ID: " + id, e);
+            throw new RuntimeException("Error while deleting user with ID: " + id);
         }
     }
 }

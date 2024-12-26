@@ -4,6 +4,8 @@ package com.berghella.daniele.edu_hub.auth.service;
 import com.berghella.daniele.edu_hub.auth.dao.AuthDAO;
 import com.berghella.daniele.edu_hub.auth.model.Auth;
 
+import java.util.UUID;
+
 public class AuthService {
     private final AuthDAO authDAO = new AuthDAO();
 
@@ -14,4 +16,5 @@ public class AuthService {
     public Auth getAuthByEmail(String email){
         return authDAO.getAuthByEmail(email);
     }
+
 }

@@ -1,5 +1,6 @@
 package com.berghella.daniele.edu_hub.controller;
 
+import com.berghella.daniele.edu_hub.auth.middleware.JwtAuthMiddleware;
 import com.berghella.daniele.edu_hub.model.MediaFileDTO;
 import com.berghella.daniele.edu_hub.model.Subject;
 import com.berghella.daniele.edu_hub.model.User;
@@ -26,6 +27,20 @@ public class MediaFileController {
     private final UserService userService = new UserService();
 
     public void registerRoutes(Javalin app) {
+        app.before("/files/*", ctx -> {
+            new JwtAuthMiddleware().handle(ctx);
+            String email = ctx.attribute("email");
+            if (email == null) {
+                throw new io.javalin.http.UnauthorizedResponse("Unauthorized");
+            }
+        });
+        app.before("/files", ctx -> {
+            new JwtAuthMiddleware().handle(ctx);
+            String email = ctx.attribute("email");
+            if (email == null) {
+                throw new io.javalin.http.UnauthorizedResponse("Unauthorized");
+            }
+        });
         app.get("/files", this::getAllFiles);
         app.get("/files/{subjectId}", this::getFilesBySubjectId);
         app.get("/files/download/{id}", this::downloadFileById);

@@ -1,22 +1,16 @@
 package com.berghella.daniele.edu_hub.dao;
 
-import com.berghella.daniele.edu_hub.auth.model.Auth;
 import com.berghella.daniele.edu_hub.model.MediaFile;
 import com.berghella.daniele.edu_hub.model.MediaFileDTO;
 import com.berghella.daniele.edu_hub.model.Subject;
 import com.berghella.daniele.edu_hub.model.User;
-import com.berghella.daniele.edu_hub.service.SubjectService;
-import com.berghella.daniele.edu_hub.service.UserService;
 import com.berghella.daniele.edu_hub.utility.database.DatabaseConnection;
 
-import java.io.File;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -24,10 +18,8 @@ import java.util.UUID;
 
 public class MediaFileDAO {
     private final Connection connection = DatabaseConnection.getInstance().getConnection();
-    private SubjectService subjectService = new SubjectService();
-    private UserService userService = new UserService();
 
-    public void uploadFile(MediaFile file){
+    public void uploadFile(MediaFile file) {
         String insertFileSQL = "INSERT INTO file(id, file_name, path, subject_id, teacher_id, upload_date) " + "VALUES (?, ?, ?, ?, ?, ?);";
         try {
             PreparedStatement psInsertFile = connection.prepareStatement(insertFileSQL);
@@ -44,17 +36,35 @@ public class MediaFileDAO {
     }
 
     public List<MediaFileDTO> getAllFiles() {
-        String query = "SELECT * FROM file";
+        String query = """
+                    SELECT 
+                        f.id AS file_id, 
+                        f.file_name, 
+                        f.path, 
+                        f.upload_date, 
+                        s.name AS subject_name, 
+                        u.last_name AS teacher_last_name
+                    FROM 
+                        file f
+                    JOIN 
+                        subject s
+                    ON 
+                        f.subject_id = s.id
+                    JOIN 
+                        users u
+                    ON 
+                        f.teacher_id = u.id
+                """;
         List<MediaFileDTO> files = new ArrayList<>();
         try (PreparedStatement ps = connection.prepareStatement(query);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 MediaFileDTO file = new MediaFileDTO();
-                file.setId(UUID.fromString(rs.getString("id")));
+                file.setId(UUID.fromString(rs.getString("file_id")));
                 file.setFileName(rs.getString("file_name"));
                 file.setPath(Paths.get(rs.getString("path")));
-                file.setSubjectName(subjectService.getSubjectById(UUID.fromString(rs.getString("subject_id"))).get().getName());
-                file.setTeacherLastName(userService.getUserById(UUID.fromString(rs.getString("teacher_id"))).get().getLastName());
+                file.setSubjectName(rs.getString("subject_name"));
+                file.setTeacherLastName(rs.getString("teacher_last_name"));
                 file.setUploadDate(rs.getDate("upload_date").toLocalDate());
                 files.add(file);
             }
@@ -65,18 +75,38 @@ public class MediaFileDAO {
     }
 
     public List<MediaFileDTO> getFilesBySubjectId(UUID subjectId) {
-        String query = "SELECT * FROM file WHERE subject_id = ?";
+        String query = """
+                    SELECT 
+                        f.id AS file_id, 
+                        f.file_name, 
+                        f.path, 
+                        f.upload_date, 
+                        s.name AS subject_name, 
+                        u.last_name AS teacher_last_name
+                    FROM 
+                        file f
+                    JOIN 
+                        subject s
+                    ON 
+                        f.subject_id = s.id
+                    JOIN 
+                        users u
+                    ON 
+                        f.teacher_id = u.id
+                    WHERE 
+                        f.subject_id = ?
+                """;
         List<MediaFileDTO> files = new ArrayList<>();
         try (PreparedStatement ps = connection.prepareStatement(query)) {
             ps.setObject(1, subjectId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     MediaFileDTO file = new MediaFileDTO();
-                    file.setId(UUID.fromString(rs.getString("id")));
+                    file.setId(UUID.fromString(rs.getString("file_id")));
                     file.setFileName(rs.getString("file_name"));
                     file.setPath(Paths.get(rs.getString("path")));
-                    file.setSubjectName(subjectService.getSubjectById(UUID.fromString(rs.getString("subject_id"))).get().getName());
-                    file.setTeacherLastName(userService.getUserById(UUID.fromString(rs.getString("teacher_id"))).get().getLastName());
+                    file.setSubjectName(rs.getString("subject_name"));
+                    file.setTeacherLastName(rs.getString("teacher_last_name"));
                     file.setUploadDate(rs.getDate("upload_date").toLocalDate());
                     files.add(file);
                 }
@@ -87,9 +117,32 @@ public class MediaFileDAO {
         return files;
     }
 
-    public ResultSet getFileResultSetById(UUID id){
+    public ResultSet getFileResultSetById(UUID id) {
         try {
-            String selectFileByIdSQL = "SELECT * FROM file WHERE id = ?";
+            String selectFileByIdSQL = """
+                        SELECT 
+                            f.id AS file_id,
+                            f.file_name,
+                            f.path,
+                            f.upload_date,
+                            s.id AS subject_id,
+                            s.name AS subject_name,
+                            u.id AS teacher_id,
+                            u.first_name AS teacher_first_name,
+                            u.last_name AS teacher_last_name
+                        FROM 
+                            file f
+                        JOIN 
+                            subject s
+                        ON 
+                            f.subject_id = s.id
+                        JOIN 
+                            users u
+                        ON 
+                            f.teacher_id = u.id
+                        WHERE 
+                            f.id = ?
+                    """;
             PreparedStatement psSelectFileById = connection.prepareStatement(selectFileByIdSQL);
             psSelectFileById.setObject(1, id);
             return psSelectFileById.executeQuery();
@@ -98,24 +151,35 @@ public class MediaFileDAO {
         }
     }
 
-    public Optional<MediaFile> downloadFileById(UUID id){
-        MediaFile file = new MediaFile();
+    public Optional<MediaFile> downloadFileById(UUID id) {
         try {
             ResultSet rs = getFileResultSetById(id);
 
             if (rs.next()) {
-                file.setId(UUID.fromString(rs.getString("id")));
+                MediaFile file = new MediaFile();
+                file.setId(UUID.fromString(rs.getString("file_id")));
                 file.setFileName(rs.getString("file_name"));
                 file.setPath(Paths.get(rs.getString("path")));
-                file.setSubject(subjectService.getSubjectById(UUID.fromString(rs.getString("subject_id"))).get());
-                file.setTeacher(userService.getUserById(UUID.fromString(rs.getString("teacher_id"))).get());
                 file.setUploadDate(rs.getDate("upload_date").toLocalDate());
+
+                Subject subject = new Subject();
+                subject.setId(UUID.fromString(rs.getString("subject_id")));
+                subject.setName(rs.getString("subject_name"));
+                file.setSubject(subject);
+
+                User teacher = new User();
+                teacher.setId(UUID.fromString(rs.getString("teacher_id")));
+                teacher.setFirstName(rs.getString("teacher_first_name"));
+                teacher.setLastName(rs.getString("teacher_last_name"));
+                file.setTeacher(teacher);
+
+                return Optional.of(file);
             }
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return Optional.of(file);
+        return Optional.empty();
     }
 
     public boolean isDeletedFileById(UUID id) {

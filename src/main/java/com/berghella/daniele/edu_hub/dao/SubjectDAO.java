@@ -102,8 +102,7 @@ public class SubjectDAO {
             int rowsAffected = psDeleteSubject.executeUpdate();
             return rowsAffected > 0;
         } catch (SQLException e) {
-            throw new RuntimeException("Error while deleting subject with ID: " + id, e);
+            throw new RuntimeException("Error while deleting subject with ID: " + id);
         }
     }
-
 }

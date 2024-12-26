@@ -1,9 +1,7 @@
 package com.berghella.daniele.edu_hub;
 
 import com.berghella.daniele.edu_hub.auth.controller.AuthController;
-import com.berghella.daniele.edu_hub.controller.MediaFileController;
-import com.berghella.daniele.edu_hub.controller.SubjectController;
-import com.berghella.daniele.edu_hub.controller.UserController;
+import com.berghella.daniele.edu_hub.controller.*;
 import io.javalin.Javalin;
 import io.javalin.json.JavalinJackson;
 
@@ -30,5 +28,11 @@ public class App {
 
         UserController userController = new UserController();
         userController.registerRoutes(app);
+
+        CourseController courseController = new CourseController();
+        courseController.registerRoutes(app);
+
+        TestController testController = new TestController();
+        testController.registerRoutes(app);
     }
 }
