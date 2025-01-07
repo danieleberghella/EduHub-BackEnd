@@ -1,5 +1,5 @@
 package com.berghella.daniele.edu_hub.model;
 
 public enum UserRole {
-    ADMIN, TEACHER, STUDENT
+    ADMIN, TEACHER, STUDENT, REGISTRATION
 }

@@ -16,20 +16,20 @@ public class SubjectController {
 
     public void registerRoutes(Javalin app) {
         // http://localhost:8000/subjects
-        app.before("/subjects", ctx -> {
-            new JwtAuthMiddleware().handle(ctx);
-            String email = ctx.attribute("email");
-            if (email == null) {
-                throw new io.javalin.http.UnauthorizedResponse("Unauthorized");
-            }
-        });
-        app.before("/subjects/*", ctx -> {
-            new JwtAuthMiddleware().handle(ctx);
-            String email = ctx.attribute("email");
-            if (email == null) {
-                throw new io.javalin.http.UnauthorizedResponse("Unauthorized");
-            }
-        });
+//        app.before("/subjects", ctx -> {
+//            new JwtAuthMiddleware().handle(ctx);
+//            String email = ctx.attribute("email");
+//            if (email == null) {
+//                throw new io.javalin.http.UnauthorizedResponse("Unauthorized");
+//            }
+//        });
+//        app.before("/subjects/*", ctx -> {
+//            new JwtAuthMiddleware().handle(ctx);
+//            String email = ctx.attribute("email");
+//            if (email == null) {
+//                throw new io.javalin.http.UnauthorizedResponse("Unauthorized");
+//            }
+//        });
         app.post("/subjects", this::createSubject);
         app.get("/subjects", this::getAllSubjects);
         app.get("/subjects/{id}", this::getSubjectById);
@@ -50,11 +50,7 @@ public class SubjectController {
     private void getAllSubjects(Context ctx) {
         try {
             List<Subject> subjects = subjectService.getAllSubjects();
-            if (!subjects.isEmpty()) {
-                ctx.status(HttpStatus.OK).json(subjects);
-            } else {
-                ctx.status(HttpStatus.BAD_REQUEST).json("Subject not found");
-            }
+            ctx.status(HttpStatus.OK).json(subjects);
         } catch (Exception e) {
             ctx.status(HttpStatus.BAD_REQUEST).result("Invalid request");
         }
@@ -80,11 +76,7 @@ public class SubjectController {
             UUID id = UUID.fromString(ctx.pathParam("id"));
             Subject subjectFormUpdate = ctx.bodyAsClass(Subject.class);
             Subject subjectUpdated = subjectService.updateSubjectById(subjectFormUpdate, id);
-            if (subjectUpdated != null) {
-                ctx.status(HttpStatus.OK).json(subjectUpdated);
-            } else {
-                ctx.status(HttpStatus.BAD_REQUEST).json("Subject not found");
-            }
+            ctx.status(HttpStatus.OK).json(subjectUpdated);
         } catch (Exception e) {
             ctx.status(HttpStatus.BAD_REQUEST).json("Invalid request");
         }
@@ -97,7 +89,7 @@ public class SubjectController {
             if (isSubjectDeleted) {
                 ctx.status(HttpStatus.OK).json("Subject Deleted");
             } else {
-                ctx.status(HttpStatus.BAD_REQUEST).json("No subject found with ID: " + id);
+                ctx.status(HttpStatus.OK).json("No subject found with ID: " + id);
             }
         } catch (Exception e) {
             ctx.status(HttpStatus.BAD_REQUEST).json("Invalid request");

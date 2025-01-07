@@ -8,6 +8,7 @@ import com.auth0.jwt.interfaces.JWTVerifier;
 import io.github.cdimascio.dotenv.Dotenv;
 
 import java.util.Date;
+import java.util.UUID;
 
 public class JwtUtil {
 
@@ -16,11 +17,11 @@ public class JwtUtil {
     private static final String SECRET = dotenv.get("SECRET");
     private static final Algorithm ALGORITHM = Algorithm.HMAC256(SECRET);
     private static final JWTVerifier VERIFIER = JWT.require(ALGORITHM).build();
-    private static final long EXPIRATION_TIME = 3600000; // 1 ora
+    private static final long EXPIRATION_TIME = 3600000;
 
-    public static String generateToken(String username) {
+    public static String generateToken(UUID userId) {
         return JWT.create()
-                .withSubject(username)
+                .withSubject(userId.toString())
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .sign(ALGORITHM);
     }

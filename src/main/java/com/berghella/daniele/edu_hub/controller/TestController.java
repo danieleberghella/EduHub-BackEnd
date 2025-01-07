@@ -3,6 +3,7 @@ package com.berghella.daniele.edu_hub.controller;
 import com.berghella.daniele.edu_hub.auth.middleware.JwtAuthMiddleware;
 import com.berghella.daniele.edu_hub.model.Test;
 import com.berghella.daniele.edu_hub.model.TestDTO;
+import com.berghella.daniele.edu_hub.model.TestResultsDTO;
 import com.berghella.daniele.edu_hub.service.TestService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,31 +14,35 @@ import io.javalin.http.HttpStatus;
 import java.util.*;
 
 public class TestController {
-    private static TestService testService = new TestService();
+    private static final TestService testService = new TestService();
 
     public void registerRoutes(Javalin app) {
         // http://localhost:8000/tests
-        app.before("/tests", ctx -> {
-            new JwtAuthMiddleware().handle(ctx);
-            String email = ctx.attribute("email");
-            if (email == null) {
-                throw new io.javalin.http.UnauthorizedResponse("Unauthorized");
-            }
-        });
-        app.before("/tests/*", ctx -> {
-            new JwtAuthMiddleware().handle(ctx);
-            String email = ctx.attribute("email");
-            if (email == null) {
-                throw new io.javalin.http.UnauthorizedResponse("Unauthorized");
-            }
-        });
+//        app.before("/tests", ctx -> {
+//            new JwtAuthMiddleware().handle(ctx);
+//            String email = ctx.attribute("email");
+//            if (email == null) {
+//                throw new io.javalin.http.UnauthorizedResponse("Unauthorized");
+//            }
+//        });
+//        app.before("/tests/*", ctx -> {
+//            new JwtAuthMiddleware().handle(ctx);
+//            String email = ctx.attribute("email");
+//            if (email == null) {
+//                throw new io.javalin.http.UnauthorizedResponse("Unauthorized");
+//            }
+//        });
 
         app.post("/tests", this::createTest);
         app.get("/tests", this::getAllTests);
+        app.get("/tests/course/{courseId}", this::getTestsByCourseId);
         app.get("/tests/{id}", this::getTestById);
         app.put("/tests/{id}", this::updateTestById);
         app.delete("/tests/{id}", this::deleteTestById);
-        app.get("/tests/results/{id}", this::calculateTestResults);
+        app.post("/tests/results/{id}", this::receiveTestResults);
+        app.get("/tests/results/{resultId}", this::getTestResultsById);
+        app.get("/tests/results/user/{userId}/course/{courseId}", this::getTestResultsByUserIdAndCourseId);
+
     }
 
     private void createTest(Context ctx) {
@@ -68,6 +73,17 @@ public class TestController {
 
         } catch (Exception e) {
             ctx.status(HttpStatus.BAD_REQUEST).result("Invalid request");
+        }
+    }
+
+    private void getTestsByCourseId(Context ctx) {
+        List<TestDTO> testsByCourseId;
+        try {
+            UUID courseId = UUID.fromString(ctx.pathParam("courseId"));
+            testsByCourseId = testService.getTestsByCourseId(courseId);
+            ctx.status(HttpStatus.OK).json(testsByCourseId);
+        } catch (Exception e) {
+            ctx.status(HttpStatus.BAD_REQUEST).json("Invalid request");
         }
     }
 
@@ -121,21 +137,47 @@ public class TestController {
         }
     }
 
-    private void calculateTestResults(Context ctx) {
+    private void receiveTestResults(Context ctx) {
         try {
             UUID testId = UUID.fromString(ctx.pathParam("id"));
+            UUID userId = UUID.fromString(Objects.requireNonNull(ctx.queryParam("userId")));
+            int secondsLeft = Integer.parseInt(Objects.requireNonNull(ctx.queryParam("secondsLeft")));
 
             ObjectMapper objectMapper = new ObjectMapper();
-            Map<UUID, List<UUID>> userAnswers = objectMapper.readValue(
+            Map<UUID, Set<UUID>> userAnswers = objectMapper.readValue(
                     ctx.body(),
-                    new TypeReference<>() {}
+                    new TypeReference<>() {
+                    }
             );
 
-            double score = testService.calculateTestResult(testId, userAnswers);
+            TestResultsDTO testResultsDTO = testService.saveAndCalculateTestResult(testId, userId, userAnswers, secondsLeft);
 
-            ctx.status(HttpStatus.OK).json(Map.of("score", Math.floor(score)));
+            ctx.status(HttpStatus.OK).json(testResultsDTO);
         } catch (Exception e) {
             ctx.status(HttpStatus.BAD_REQUEST).result("Invalid request");
         }
     }
+
+    private void getTestResultsById(Context ctx) {
+        try {
+            UUID resultId = UUID.fromString(ctx.pathParam("resultId"));
+            TestResultsDTO testResultsDTO = testService.getTestResultsById(resultId);
+            ctx.status(HttpStatus.OK).json(testResultsDTO);
+        } catch (Exception e) {
+            ctx.status(HttpStatus.BAD_REQUEST).result("Invalid request");
+        }
+    }
+
+    private void getTestResultsByUserIdAndCourseId(Context ctx) {
+        try {
+            UUID userId = UUID.fromString(ctx.pathParam("userId"));
+            UUID courseId = UUID.fromString(ctx.pathParam("courseId"));
+
+            List<TestResultsDTO> testResults = testService.getTestResultsByUserIdAndCourseId(userId, courseId);
+            ctx.status(HttpStatus.OK).json(testResults);
+        } catch (Exception e) {
+            ctx.status(HttpStatus.BAD_REQUEST).result("Invalid request");
+        }
+    }
+
 }

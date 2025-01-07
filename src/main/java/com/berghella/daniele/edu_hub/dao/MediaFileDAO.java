@@ -1,9 +1,6 @@
 package com.berghella.daniele.edu_hub.dao;
 
-import com.berghella.daniele.edu_hub.model.MediaFile;
-import com.berghella.daniele.edu_hub.model.MediaFileDTO;
-import com.berghella.daniele.edu_hub.model.Subject;
-import com.berghella.daniele.edu_hub.model.User;
+import com.berghella.daniele.edu_hub.model.*;
 import com.berghella.daniele.edu_hub.utility.database.DatabaseConnection;
 
 import java.nio.file.Paths;
@@ -20,13 +17,13 @@ public class MediaFileDAO {
     private final Connection connection = DatabaseConnection.getInstance().getConnection();
 
     public void uploadFile(MediaFile file) {
-        String insertFileSQL = "INSERT INTO file(id, file_name, path, subject_id, teacher_id, upload_date) " + "VALUES (?, ?, ?, ?, ?, ?);";
+        String insertFileSQL = "INSERT INTO file(id, file_name, path, course_id, teacher_id, upload_date) " + "VALUES (?, ?, ?, ?, ?, ?);";
         try {
             PreparedStatement psInsertFile = connection.prepareStatement(insertFileSQL);
             psInsertFile.setObject(1, file.getId());
             psInsertFile.setString(2, file.getFileName());
             psInsertFile.setString(3, file.getPath().toString());
-            psInsertFile.setObject(4, file.getSubject().getId());
+            psInsertFile.setObject(4, file.getCourse().getId());
             psInsertFile.setObject(5, file.getTeacher().getId());
             psInsertFile.setObject(6, file.getUploadDate());
             psInsertFile.executeUpdate();
@@ -42,14 +39,14 @@ public class MediaFileDAO {
                         f.file_name, 
                         f.path, 
                         f.upload_date, 
-                        s.name AS subject_name, 
+                        c.name AS course_name, 
                         u.last_name AS teacher_last_name
                     FROM 
                         file f
                     JOIN 
-                        subject s
+                        course c
                     ON 
-                        f.subject_id = s.id
+                        f.course_id = c.id
                     JOIN 
                         users u
                     ON 
@@ -63,7 +60,7 @@ public class MediaFileDAO {
                 file.setId(UUID.fromString(rs.getString("file_id")));
                 file.setFileName(rs.getString("file_name"));
                 file.setPath(Paths.get(rs.getString("path")));
-                file.setSubjectName(rs.getString("subject_name"));
+                file.setCourseName(rs.getString("course_name"));
                 file.setTeacherLastName(rs.getString("teacher_last_name"));
                 file.setUploadDate(rs.getDate("upload_date").toLocalDate());
                 files.add(file);
@@ -74,38 +71,38 @@ public class MediaFileDAO {
         return files;
     }
 
-    public List<MediaFileDTO> getFilesBySubjectId(UUID subjectId) {
+    public List<MediaFileDTO> getFilesByCourseId(UUID courseId) {
         String query = """
                     SELECT 
                         f.id AS file_id, 
                         f.file_name, 
                         f.path, 
                         f.upload_date, 
-                        s.name AS subject_name, 
+                        c.name AS course_name, 
                         u.last_name AS teacher_last_name
                     FROM 
                         file f
                     JOIN 
-                        subject s
+                        course c
                     ON 
-                        f.subject_id = s.id
+                        f.course_id = c.id
                     JOIN 
                         users u
                     ON 
                         f.teacher_id = u.id
                     WHERE 
-                        f.subject_id = ?
+                        f.course_id = ?
                 """;
         List<MediaFileDTO> files = new ArrayList<>();
         try (PreparedStatement ps = connection.prepareStatement(query)) {
-            ps.setObject(1, subjectId);
+            ps.setObject(1, courseId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     MediaFileDTO file = new MediaFileDTO();
                     file.setId(UUID.fromString(rs.getString("file_id")));
                     file.setFileName(rs.getString("file_name"));
                     file.setPath(Paths.get(rs.getString("path")));
-                    file.setSubjectName(rs.getString("subject_name"));
+                    file.setCourseName(rs.getString("course_name"));
                     file.setTeacherLastName(rs.getString("teacher_last_name"));
                     file.setUploadDate(rs.getDate("upload_date").toLocalDate());
                     files.add(file);
@@ -125,17 +122,18 @@ public class MediaFileDAO {
                             f.file_name,
                             f.path,
                             f.upload_date,
-                            s.id AS subject_id,
-                            s.name AS subject_name,
+                            c.id AS course_id,
+                            c.name AS course_name,
+                            c.total_hours AS course_total_hours,
                             u.id AS teacher_id,
                             u.first_name AS teacher_first_name,
                             u.last_name AS teacher_last_name
                         FROM 
                             file f
                         JOIN 
-                            subject s
+                            course c
                         ON 
-                            f.subject_id = s.id
+                            f.course_id = c.id
                         JOIN 
                             users u
                         ON 
@@ -162,10 +160,11 @@ public class MediaFileDAO {
                 file.setPath(Paths.get(rs.getString("path")));
                 file.setUploadDate(rs.getDate("upload_date").toLocalDate());
 
-                Subject subject = new Subject();
-                subject.setId(UUID.fromString(rs.getString("subject_id")));
-                subject.setName(rs.getString("subject_name"));
-                file.setSubject(subject);
+                Course course = new Course();
+                course.setId(UUID.fromString(rs.getString("course_id")));
+                course.setName(rs.getString("course_name"));
+                course.setTotalHours(rs.getInt("course_total_hours"));
+                file.setCourse(course);
 
                 User teacher = new User();
                 teacher.setId(UUID.fromString(rs.getString("teacher_id")));

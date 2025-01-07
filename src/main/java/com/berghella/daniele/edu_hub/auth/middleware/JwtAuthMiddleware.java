@@ -9,7 +9,11 @@ public class JwtAuthMiddleware implements Handler {
 
     @Override
     public void handle(Context ctx) throws Exception {
+        System.out.println(ctx.headerMap());
         String authHeader = ctx.header("Authorization");
+        String authHeader2 = ctx.header("authorization");
+        String authHeader3 = ctx.header("AUTHORIZATION");
+
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             ctx.status(HttpStatus.UNAUTHORIZED).result("Missing or invalid token");
@@ -18,8 +22,8 @@ public class JwtAuthMiddleware implements Handler {
 
         String token = authHeader.replace("Bearer ", "");
         try {
-            String email = JwtUtil.validateToken(token);
-            ctx.attribute("email", email);
+            String userId = JwtUtil.validateToken(token);
+            ctx.attribute("userId", userId);
         } catch (Exception e) {
             ctx.status(HttpStatus.UNAUTHORIZED).result("Invalid or expired token");
         }

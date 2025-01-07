@@ -12,14 +12,12 @@ public class Test {
     private Course course;
     private Subject subject;
     private String title;
-    private String description;
     private int availableMinutes;
 
-    public Test(Course course, Subject subject, String title, String description, int availableMinutes) {
+    public Test(Course course, Subject subject, String title, int availableMinutes) {
         this.course = course;
         this.subject = subject;
         this.title = title;
-        this.description = description;
         this.availableMinutes = availableMinutes;
     }
 }

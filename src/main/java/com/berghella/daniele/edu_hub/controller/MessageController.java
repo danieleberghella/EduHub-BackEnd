@@ -19,15 +19,15 @@ public class MessageController {
         // http://localhost:8000/messages
 //        app.before("/messages", ctx -> {
 //            new JwtAuthMiddleware().handle(ctx);
-//            String email = ctx.attribute("email");
-//            if (email == null) {
+//            String userId = ctx.attribute("userId");
+//            if (userId == null) {
 //                throw new io.javalin.http.UnauthorizedResponse("Unauthorized");
 //            }
 //        });
 //        app.before("/messages/*", ctx -> {
 //            new JwtAuthMiddleware().handle(ctx);
-//            String email = ctx.attribute("email");
-//            if (email == null) {
+//            String userId = ctx.attribute("userId");
+//            if (userId == null) {
 //                throw new io.javalin.http.UnauthorizedResponse("Unauthorized");
 //            }
 //        });
@@ -54,7 +54,7 @@ public class MessageController {
     private void getMessagesByUserId(Context ctx) {
         try {
             UUID userId = UUID.fromString(ctx.pathParam("userId"));
-            ctx.json(messageService.getMessagesByUserId(userId));
+            ctx.status(HttpStatus.OK).json(messageService.getMessagesByUserId(userId));
         } catch (Exception e) {
             ctx.status(HttpStatus.BAD_REQUEST).result("Invalid user ID");
         }

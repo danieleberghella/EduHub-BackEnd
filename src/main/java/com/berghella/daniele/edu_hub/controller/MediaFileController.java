@@ -1,11 +1,11 @@
 package com.berghella.daniele.edu_hub.controller;
 
 import com.berghella.daniele.edu_hub.auth.middleware.JwtAuthMiddleware;
+import com.berghella.daniele.edu_hub.model.Course;
 import com.berghella.daniele.edu_hub.model.MediaFileDTO;
-import com.berghella.daniele.edu_hub.model.Subject;
 import com.berghella.daniele.edu_hub.model.User;
+import com.berghella.daniele.edu_hub.service.CourseService;
 import com.berghella.daniele.edu_hub.service.MediaFileService;
-import com.berghella.daniele.edu_hub.service.SubjectService;
 import com.berghella.daniele.edu_hub.service.UserService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
@@ -21,28 +21,28 @@ import java.nio.file.Path;
 import java.util.*;
 
 public class MediaFileController {
-
     private final MediaFileService mediaFileService = new MediaFileService("uploads");
-    private final SubjectService subjectService = new SubjectService();
     private final UserService userService = new UserService();
+    private final CourseService courseService = new CourseService();
 
     public void registerRoutes(Javalin app) {
-        app.before("/files/*", ctx -> {
-            new JwtAuthMiddleware().handle(ctx);
-            String email = ctx.attribute("email");
-            if (email == null) {
-                throw new io.javalin.http.UnauthorizedResponse("Unauthorized");
-            }
-        });
-        app.before("/files", ctx -> {
-            new JwtAuthMiddleware().handle(ctx);
-            String email = ctx.attribute("email");
-            if (email == null) {
-                throw new io.javalin.http.UnauthorizedResponse("Unauthorized");
-            }
-        });
+        // http://localhost:8000/files
+//        app.before("/files/*", ctx -> {
+//            new JwtAuthMiddleware().handle(ctx);
+//            String email = ctx.attribute("email");
+//            if (email == null) {
+//                throw new io.javalin.http.UnauthorizedResponse("Unauthorized");
+//            }
+//        });
+//        app.before("/files", ctx -> {
+//            new JwtAuthMiddleware().handle(ctx);
+//            String email = ctx.attribute("email");
+//            if (email == null) {
+//                throw new io.javalin.http.UnauthorizedResponse("Unauthorized");
+//            }
+//        });
         app.get("/files", this::getAllFiles);
-        app.get("/files/{subjectId}", this::getFilesBySubjectId);
+        app.get("/files/{courseId}", this::getFilesByCourseId);
         app.get("/files/download/{id}", this::downloadFileById);
         app.post("/files/upload", this::uploadFiles);
         app.delete("/files/delete/{id}", this::deleteFileById);
@@ -57,22 +57,22 @@ public class MediaFileController {
         }
 
         try {
-            UUID subjectId = UUID.fromString(Objects.requireNonNull(ctx.formParam("subject-id")));
+            UUID courseId = UUID.fromString(Objects.requireNonNull(ctx.formParam("course-id")));
             UUID teacherId = UUID.fromString(Objects.requireNonNull(ctx.formParam("teacher-id")));
             Optional<User> teacherOP = userService.getUserById(teacherId);
-            Optional<Subject> subjectOP = subjectService.getSubjectById(subjectId);
+            Optional<Course> courseOP = courseService.getCourseById(courseId);
 
             if (teacherOP.isEmpty()) {
                 ctx.status(HttpStatus.BAD_REQUEST).result("Teacher ID not found!");
                 return;
             }
-            if (subjectOP.isEmpty()) {
+            if (courseOP.isEmpty()) {
                 ctx.status(HttpStatus.BAD_REQUEST).result("Subject ID not found!");
                 return;
             }
 
             User teacher = teacherOP.get();
-            Subject subject = subjectOP.get();
+            Course course = courseOP.get();
 
             StringBuilder response = new StringBuilder();
             response.append("Files successfully saved:\n");
@@ -81,7 +81,7 @@ public class MediaFileController {
                 String fileName = uploadedFile.filename();
 
                 try (InputStream fileContent = uploadedFile.content()) {
-                    Map<UUID, Path> fileMap = mediaFileService.uploadFile(fileName, fileContent, subject, teacher);
+                    Map<UUID, Path> fileMap = mediaFileService.uploadFile(fileName, fileContent, course, teacher);
                     UUID fileId = fileMap.keySet().iterator().next();
                     Path filePath = fileMap.get(fileId);
 
@@ -114,15 +114,11 @@ public class MediaFileController {
         }
     }
 
-    public void getFilesBySubjectId(Context ctx) {
+    public void getFilesByCourseId(Context ctx) {
         try {
-            UUID subjectId = UUID.fromString(ctx.pathParam("subjectId"));
-            List<MediaFileDTO> files = mediaFileService.getFilesBySubjectId(subjectId);
-            if (files.isEmpty()) {
-                ctx.status(HttpStatus.BAD_REQUEST).result("Files not found!");
-            } else {
-                ctx.status(HttpStatus.OK).json(files);
-            }
+            UUID courseId = UUID.fromString(ctx.pathParam("courseId"));
+            List<MediaFileDTO> files = mediaFileService.getFilesByCourseId(courseId);
+            ctx.status(HttpStatus.OK).json(files);
         } catch (Exception e) {
             ctx.status(HttpStatus.INTERNAL_SERVER_ERROR).result("An error occurred while fetching files");
         }

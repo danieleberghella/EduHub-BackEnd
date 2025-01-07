@@ -18,6 +18,11 @@ public class CourseService {
         return courseDAO.getAllCourses();
     }
 
+    public List<Course> getAllCoursesByUserId(UUID userId) {
+        return courseDAO.getAllCoursesByUserId(userId);
+    }
+
+
     public Optional<Course> getCourseById(UUID id) {
         return courseDAO.getCourseById(id);
     }

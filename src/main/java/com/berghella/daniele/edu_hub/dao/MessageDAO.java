@@ -14,14 +14,17 @@ public class MessageDAO {
     private static final Connection connection = DatabaseConnection.getInstance().getConnection();
 
     private User mapUserFromResultSet(ResultSet rs, String prefix) throws SQLException {
-        return new User(
+        User user = new User(
                 rs.getString(prefix + "first_name"),
                 rs.getString(prefix + "last_name"),
                 rs.getString(prefix + "email"),
                 UserRole.valueOf(rs.getString(prefix + "role")),
                 rs.getTimestamp(prefix + "birthdate").toLocalDateTime().toLocalDate()
         );
+        user.setId(UUID.fromString(rs.getString(prefix + "id")));
+        return user;
     }
+
 
     private Message mapMessageFromResultSet(ResultSet rs) throws SQLException {
         User sender = mapUserFromResultSet(rs, "sender_");

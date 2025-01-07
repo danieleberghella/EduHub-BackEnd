@@ -13,7 +13,19 @@ import java.util.UUID;
 public class UserDAO {
     private final Connection connection = DatabaseConnection.getInstance().getConnection();
 
-    public void createUser(User user){
+    private User mapResultSetToUser(ResultSet rs) throws SQLException {
+        User user = new User(
+                rs.getString("first_name"),
+                rs.getString("last_name"),
+                rs.getString("email"),
+                UserRole.valueOf(rs.getString("role")),
+                rs.getDate("birthdate").toLocalDate()
+        );
+        user.setId(UUID.fromString(rs.getString("id")));
+        return user;
+    }
+
+    public void createUser(User user) {
         String insertUserSQL = "INSERT INTO users(id, first_name, last_name, email, role) " + "VALUES (?, ?, ?, ?, ?);";
         try {
             PreparedStatement psInsertUser = connection.prepareStatement(insertUserSQL);
@@ -30,22 +42,30 @@ public class UserDAO {
 
     public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
-        String getAllUsersSQL = "SELECT * FROM users";
-        try {
-            Statement stm = connection.createStatement();
-            ResultSet rs = stm.executeQuery(getAllUsersSQL);
-            while (rs.next()){
-                User user = new User(
-                        rs.getString("first_name"),
-                        rs.getString("last_name"),
-                        rs.getString("email"),
-                        UserRole.valueOf(rs.getString("role")),
-                        rs.getDate("birthdate").toLocalDate());
-                user.setId(UUID.fromString(rs.getString("id")));
-                users.add(user);
+        String sql = "SELECT * FROM users";
+        try (Statement stm = connection.createStatement();
+             ResultSet rs = stm.executeQuery(sql)) {
+            while (rs.next()) {
+                users.add(mapResultSetToUser(rs));
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error retrieving all users", e);
+        }
+        return users;
+    }
+
+    public List<User> getAllUsersPerRole(UserRole role) {
+        List<User> users = new ArrayList<>();
+        String sql = "SELECT * FROM users WHERE role = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, role.toString().toUpperCase());
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    users.add(mapResultSetToUser(rs));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error retrieving users by role", e);
         }
         return users;
     }
@@ -57,14 +77,7 @@ public class UserDAO {
             psSelectUserById.setObject(1, id);
             ResultSet rs = psSelectUserById.executeQuery();
             if (rs.next()) {
-                User user = new User(
-                        rs.getString("first_name"),
-                        rs.getString("last_name"),
-                        rs.getString("email"),
-                        UserRole.valueOf(rs.getString("role")),
-                        rs.getDate("birthdate").toLocalDate());
-                user.setId(id);
-                return Optional.of(user);
+                return Optional.of(mapResultSetToUser(rs));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -72,8 +85,39 @@ public class UserDAO {
         return Optional.empty();
     }
 
+    public List<User> getUsersByCourseId(UUID courseId, boolean isEnrolled) {
+        String selectUsersByCourseSQL;
+        if (isEnrolled) {
+            selectUsersByCourseSQL = "SELECT DISTINCT u.* " +
+                    "FROM users u " +
+                    "JOIN enrollment e ON u.id = e.user_id " +
+                    "WHERE e.course_id = ?";
+        } else {
+            selectUsersByCourseSQL = "SELECT DISTINCT u.* " +
+                    "FROM users u " +
+                    "LEFT JOIN enrollment e ON u.id = e.user_id AND e.course_id = ? " +
+                    "WHERE e.course_id IS NULL AND u.role <> 'ADMIN' AND u.role <> 'REGISTRATION'";
+        }
+        List<User> users = new ArrayList<>();
+        try (PreparedStatement psSelectUsersByCourse = connection.prepareStatement(selectUsersByCourseSQL)) {
+            psSelectUsersByCourse.setObject(1, courseId);
+            ResultSet rs = psSelectUsersByCourse.executeQuery();
+            if (!rs.next()) {
+                return users;
+
+            } else {
+                while (rs.next()) {
+                    users.add(mapResultSetToUser(rs));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error retrieving users by course ID", e);
+        }
+        return users;
+    }
+
     public User updateUserById(User updatedUser, UUID oldUserId) {
-        if (getUserById(oldUserId).isPresent()){
+        if (getUserById(oldUserId).isPresent()) {
             StringBuilder sql = new StringBuilder("UPDATE users SET ");
             List<Object> parameters = new ArrayList<>();
 

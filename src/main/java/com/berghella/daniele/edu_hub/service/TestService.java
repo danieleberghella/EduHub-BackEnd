@@ -3,6 +3,8 @@ package com.berghella.daniele.edu_hub.service;
 import com.berghella.daniele.edu_hub.dao.TestDAO;
 import com.berghella.daniele.edu_hub.model.*;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 
 public class TestService {
@@ -43,7 +45,6 @@ public class TestService {
                 test.getCourse().getId(),
                 test.getSubject().getId(),
                 test.getTitle(),
-                test.getDescription(),
                 test.getAvailableMinutes(),
                 allQuestionsDTO
         );
@@ -64,7 +65,6 @@ public class TestService {
                 course,
                 subject,
                 testDTO.getTitle(),
-                testDTO.getDescription(),
                 testDTO.getAvailableMinutes()
         );
         testDAO.createTest(newTest);
@@ -100,6 +100,24 @@ public class TestService {
         return allTestsDTO;
     }
 
+    public List<TestDTO> getTestsByCourseId(UUID courseId) {
+        List<Test> allTests = testDAO.getTestsByCourseId(courseId);
+        List<TestDTO> allTestsDTO = new ArrayList<>();
+        for (Test test : allTests) {
+            TestDTO testDTO = convertTestToTestDTO(test);
+            allTestsDTO.add(testDTO);
+        }
+        return allTestsDTO;
+    }
+
+    public TestResultsDTO getTestResultsById(UUID testResultId) {
+        return testDAO.getTestResultsById(testResultId);
+    }
+
+    public List<TestResultsDTO> getTestResultsByUserIdAndCourseId(UUID userId, UUID courseId) {
+        return testDAO.getTestResultsByUserIdAndCourseId(userId, courseId);
+    }
+
     public Optional<TestDTO> getTestById(UUID id) {
         Optional<Test> testOP = testDAO.getTestById(id);
         if (testOP.isPresent()) {
@@ -111,7 +129,7 @@ public class TestService {
 
     public TestDTO updateTestById(Test testUpdate, UUID oldTestId) {
         Test test = testDAO.updateTestById(testUpdate, oldTestId);
-        if (test != null){
+        if (test != null) {
             return convertTestToTestDTO(test);
         } else {
             return null;
@@ -122,15 +140,57 @@ public class TestService {
         return testDAO.isDeletedTestById(id);
     }
 
-    public double calculateTestResult(UUID testId, Map<UUID, List<UUID>> userAnswers) {
-        List<Question> questions = questionService.getQuestionsByTestId(testId);
+    public TestResultsDTO saveAndCalculateTestResult(UUID testId, UUID userId, Map<UUID, Set<UUID>> userAnswers, int secondsLeft) {
+        TestDTO testDTO = getTestById(testId).orElseThrow(() ->
+                new IllegalStateException("Test not found for ID: " + testId));
 
+        int testDuration = (testDTO.getAvailableMinutes() * 60) - secondsLeft;
+
+        List<Question> questions = questionService.getQuestionsByTestId(testId);
+        Map<UUID, Double> questionScores = calculateQuestionScores(testId, userAnswers, questions);
+
+        double maxScore = questions.stream()
+                .mapToDouble(Question::getPoints)
+                .sum();
+
+        double totalScore = questionScores.values().stream()
+                .mapToDouble(Double::doubleValue)
+                .sum();
+
+        double scoreInThirtieths = (totalScore / maxScore) * 30;
+
+        scoreInThirtieths = BigDecimal.valueOf(scoreInThirtieths)
+                .setScale(2, RoundingMode.HALF_UP)
+                .doubleValue();
+
+        if (scoreInThirtieths < 0) {
+            scoreInThirtieths = 0;
+        }
+
+        boolean isSuccess = scoreInThirtieths >= 18;
+
+        TestResultsDTO testResultsDTO = new TestResultsDTO();
+        testResultsDTO.setTestId(testId);
+        testResultsDTO.setTitle(testDTO.getTitle());
+        testResultsDTO.setStudentId(userId);
+        testResultsDTO.setCourseId(testDTO.getCourseId());
+        testResultsDTO.setScore(scoreInThirtieths);
+        testResultsDTO.setSuccess(isSuccess);
+        testResultsDTO.setQuestions(userAnswers);
+        testResultsDTO.setTestDuration(testDuration);
+        testResultsDTO.setQuestionScores(questionScores);
+
+        testDAO.saveTestResults(testResultsDTO);
+
+        return testResultsDTO;
+    }
+
+    public Map<UUID, Double> calculateQuestionScores(UUID testId, Map<UUID, Set<UUID>> userAnswers, List<Question> questions) {
         if (questions.isEmpty()) {
             throw new IllegalStateException("No questions found for the test with ID: " + testId);
         }
 
-        double totalPoints = 0;
-        double userPoints = 0;
+        Map<UUID, Double> questionScores = new HashMap<>();
 
         for (Question question : questions) {
             double questionValue = question.getPoints();
@@ -138,23 +198,30 @@ public class TestService {
                     .filter(Answer::isCorrectAnswer)
                     .toList();
 
-            List<UUID> userSelectedAnswers = userAnswers.getOrDefault(question.getId(), List.of());
-            if (!correctAnswers.isEmpty()) {
-                double pointPerCorrectAnswer = questionValue / correctAnswers.size();
+            Set<UUID> userSelectedAnswers = userAnswers.getOrDefault(question.getId(), Set.of());
 
-                for (Answer answer : correctAnswers) {
-                    if (userSelectedAnswers.contains(answer.getId())) {
-                        userPoints += pointPerCorrectAnswer;
+            double pointPerCorrectAnswer = correctAnswers.isEmpty() ? 0 : questionValue / correctAnswers.size();
+
+            boolean hasWrongAnswers = userSelectedAnswers.stream()
+                    .anyMatch(userAnswerId -> correctAnswers.stream()
+                            .noneMatch(correctAnswer -> correctAnswer.getId().equals(userAnswerId)));
+
+            double questionScore = 0;
+
+            if (hasWrongAnswers) {
+                questionScore = -0.25 * userSelectedAnswers.size();
+            } else {
+                for (Answer correctAnswer : correctAnswers) {
+                    if (userSelectedAnswers.contains(correctAnswer.getId())) {
+                        questionScore += pointPerCorrectAnswer;
                     }
                 }
             }
 
-            totalPoints += questionValue;
+            questionScores.put(question.getId(), questionScore);
         }
 
-        if (totalPoints > 0) {
-            return userPoints / totalPoints * 30;
-        }
-        return -1;
+        return questionScores;
     }
+
 }

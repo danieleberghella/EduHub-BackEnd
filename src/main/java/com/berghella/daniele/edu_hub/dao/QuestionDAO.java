@@ -35,8 +35,7 @@ public class QuestionDAO {
                 q.question_text,
                 q.points,
                 t.id AS test_id,
-        t.name AS test_name,
-                t.description AS test_description
+        t.name AS test_name
         FROM
         question q
         JOIN
@@ -51,7 +50,6 @@ public class QuestionDAO {
                 Test test = new Test();
                 test.setId(UUID.fromString(rs.getString("test_id")));
                 test.setTitle(rs.getString("test_name"));
-                test.setDescription(rs.getString("test_description"));
 
                 Question question = new Question();
                 question.setId(UUID.fromString(rs.getString("question_id")));
@@ -74,8 +72,7 @@ public class QuestionDAO {
             q.question_text,
             q.points,
             t.id AS test_id,
-            t.title AS test_name,
-            t.description AS test_description
+            t.title AS test_name
         FROM
             question q
         JOIN
@@ -94,7 +91,6 @@ public class QuestionDAO {
                     Test test = new Test();
                     test.setId(UUID.fromString(rs.getString("test_id")));
                     test.setTitle(rs.getString("test_name"));
-                    test.setDescription(rs.getString("test_description"));
 
                     Question question = new Question();
                     question.setId(UUID.fromString(rs.getString("question_id")));
@@ -119,8 +115,7 @@ public class QuestionDAO {
             q.question_text, 
             q.points, 
             t.id AS test_id, 
-            t.name AS test_name, 
-            t.description AS test_description
+            t.name AS test_name
         FROM 
             question q
         JOIN 
@@ -138,7 +133,6 @@ public class QuestionDAO {
                 Test test = new Test();
                 test.setId(UUID.fromString(rs.getString("test_id")));
                 test.setTitle(rs.getString("test_name"));
-                test.setDescription(rs.getString("test_description"));
 
                 Question question = new Question();
                 question.setId(UUID.fromString(rs.getString("question_id")));

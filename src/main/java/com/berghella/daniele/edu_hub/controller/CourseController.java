@@ -17,29 +17,30 @@ public class CourseController {
 
     public void registerRoutes(Javalin app) {
         // http://localhost:8000/courses
-        app.before("/courses", ctx -> {
-            new JwtAuthMiddleware().handle(ctx);
-            String email = ctx.attribute("email");
-            if (email == null) {
-                throw new io.javalin.http.UnauthorizedResponse("Unauthorized");
-            }
-        });
-        app.before("/courses/*", ctx -> {
-            new JwtAuthMiddleware().handle(ctx);
-            String email = ctx.attribute("email");
-            if (email == null) {
-                throw new io.javalin.http.UnauthorizedResponse("Unauthorized");
-            }
-        });
+//        app.before("/courses", ctx -> {
+//            new JwtAuthMiddleware().handle(ctx);
+//            String email = ctx.attribute("email");
+//            if (email == null) {
+//                throw new io.javalin.http.UnauthorizedResponse("Unauthorized");
+//            }
+//        });
+//        app.before("/courses/*", ctx -> {
+//            new JwtAuthMiddleware().handle(ctx);
+//            String email = ctx.attribute("email");
+//            if (email == null) {
+//                throw new io.javalin.http.UnauthorizedResponse("Unauthorized");
+//            }
+//        });
         app.post("/courses", this::createCourse);
         app.get("/courses", this::getAllCourses);
+        app.get("/courses/user/{userId}", this::getAllCoursesByUserId);
         app.get("/courses/{id}", this::getCourseById);
         app.put("/courses/{id}", this::updateCourseById);
         app.delete("/courses/{id}", this::deleteCourseById);
     }
 
     private void createCourse(Context ctx) {
-        try{
+        try {
             Course newCourse = ctx.bodyAsClass(Course.class);
             courseService.createCourse(newCourse);
             ctx.status(HttpStatus.CREATED).json(newCourse.getId());
@@ -56,6 +57,16 @@ public class CourseController {
             } else {
                 ctx.status(HttpStatus.BAD_REQUEST).json("Course not found");
             }
+        } catch (Exception e) {
+            ctx.status(HttpStatus.BAD_REQUEST).result("Invalid request");
+        }
+    }
+
+    private void getAllCoursesByUserId(Context ctx) {
+        try {
+            UUID userId = UUID.fromString(ctx.pathParam("userId"));
+            List<Course> courses = courseService.getAllCoursesByUserId(userId);
+            ctx.status(HttpStatus.OK).json(courses);
         } catch (Exception e) {
             ctx.status(HttpStatus.BAD_REQUEST).result("Invalid request");
         }

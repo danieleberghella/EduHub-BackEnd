@@ -3,7 +3,6 @@ package com.berghella.daniele.edu_hub.service;
 import com.berghella.daniele.edu_hub.dao.MessageDAO;
 import com.berghella.daniele.edu_hub.model.Message;
 import com.berghella.daniele.edu_hub.model.MessageDTO;
-import com.berghella.daniele.edu_hub.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,13 +23,35 @@ public class MessageService {
         );
     }
 
+    private MessageDTO messageToMessageDTO(Message message) {
+        String senderCompleteName = message.getSender().getLastName() + " " + message.getSender().getFirstName();
+        String receiverCompleteName = message.getReceiver().getLastName() + " " + message.getReceiver().getFirstName();
+        return new MessageDTO(
+                message.getSender().getId(),
+                senderCompleteName,
+                message.getSender().getRole(),
+                message.getReceiver().getId(),
+                receiverCompleteName,
+                message.getMessageSubject(),
+                message.getText(),
+                message.getSentAt()
+        );
+    }
+
+
     public UUID createMessage(MessageDTO messageDTO) {
         Message message = messageDTOtoMessage(messageDTO, messageDTO.getReceiverId());
         return messageDAO.createMessage(message);
     }
 
-    public List<Message> getMessagesByUserId(UUID userId) {
-        return messageDAO.getMessagesByUserId(userId);
+    public List<MessageDTO> getMessagesByUserId(UUID userId) {
+        List<Message> messagesByUserId = messageDAO.getMessagesByUserId(userId);
+        List<MessageDTO> messagesDTOByUserId = new ArrayList<>();
+        for (Message message : messagesByUserId) {
+            MessageDTO messageDTO = messageToMessageDTO(message);
+            messagesDTOByUserId.add(messageDTO);
+        }
+        return messagesDTOByUserId;
     }
 
     public Optional<Message> getMessageById(UUID messageId) {

@@ -15,15 +15,15 @@ public class MediaFile {
     private UUID id = UUID.randomUUID();
     private String fileName;
     private Path path;
-    private Subject subject;
+    private Course course;
     private User teacher;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate uploadDate;
 
-    public MediaFile(String fileName, Path path, Subject subject, User teacher, LocalDate uploadDate) {
+    public MediaFile(String fileName, Path path, Course course, User teacher, LocalDate uploadDate) {
         this.fileName = fileName;
         this.path = path;
-        this.subject = subject;
+        this.course = course;
         this.teacher = teacher;
         this.uploadDate = uploadDate;
     }

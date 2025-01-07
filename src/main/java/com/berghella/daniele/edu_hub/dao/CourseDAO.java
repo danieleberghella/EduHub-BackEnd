@@ -46,6 +46,31 @@ public class CourseDAO {
         return courses;
     }
 
+    public List<Course> getAllCoursesByUserId(UUID userId) {
+        List<Course> coursesByUserId = new ArrayList<>();
+        String getAllCoursesByUserIdSQL = """
+        SELECT c.id, c.name, c.description, c.total_hours 
+        FROM course c
+        INNER JOIN enrollment e ON c.id = e.course_id
+        WHERE e.user_id = ?
+    """;
+        try (PreparedStatement ps = connection.prepareStatement(getAllCoursesByUserIdSQL)) {
+            ps.setObject(1, userId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Course course = new Course(
+                        rs.getString("name"),
+                        rs.getString("description"),
+                        rs.getInt("total_hours"));
+                course.setId(UUID.fromString(rs.getString("id")));
+                coursesByUserId.add(course);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error fetching courses for user: " + userId);
+        }
+        return coursesByUserId;
+    }
+
     public Optional<Course> getCourseById(UUID id) {
         String selectCourseByIdSQL = "SELECT * FROM course WHERE id = ?";
         try {

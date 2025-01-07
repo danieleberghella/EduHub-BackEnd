@@ -11,12 +11,8 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TestDTO {
+public class QuestionResultsDTO {
     private UUID id;
-    private UUID courseId;
-    private UUID subjectId;
-    private String title;
-    private int availableMinutes;
-    private List<QuestionDTO> questions = new ArrayList<>();
+    private List<AnswerDTO> answers = new ArrayList<>();
 
 }

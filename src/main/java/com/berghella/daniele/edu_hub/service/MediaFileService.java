@@ -1,10 +1,7 @@
 package com.berghella.daniele.edu_hub.service;
 
 import com.berghella.daniele.edu_hub.dao.MediaFileDAO;
-import com.berghella.daniele.edu_hub.model.MediaFile;
-import com.berghella.daniele.edu_hub.model.MediaFileDTO;
-import com.berghella.daniele.edu_hub.model.Subject;
-import com.berghella.daniele.edu_hub.model.User;
+import com.berghella.daniele.edu_hub.model.*;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -29,7 +26,7 @@ public class MediaFileService {
         }
     }
 
-    public Map<UUID, Path> uploadFile(String fileName, InputStream fileContent, Subject subject, User teacher) throws IOException {
+    public Map<UUID, Path> uploadFile(String fileName, InputStream fileContent, Course course, User teacher) throws IOException {
         Path filePath = Paths.get(uploadDir, fileName);
         Map<UUID, Path> fileMap = new HashMap<>();
         try (OutputStream outputStream = new FileOutputStream(filePath.toFile())) {
@@ -39,7 +36,7 @@ public class MediaFileService {
                 outputStream.write(buffer, 0, bytesRead);
             }
             LocalDate uploadDate = LocalDate.now();
-            MediaFile file = new MediaFile(fileName, filePath, subject, teacher, uploadDate);
+            MediaFile file = new MediaFile(fileName, filePath, course, teacher, uploadDate);
             mediaFileDAO.uploadFile(file);
             fileMap.put(file.getId(), filePath);
         }
@@ -50,8 +47,8 @@ public class MediaFileService {
         return mediaFileDAO.getAllFiles();
     }
 
-    public List<MediaFileDTO> getFilesBySubjectId(UUID subjectId) {
-        return mediaFileDAO.getFilesBySubjectId(subjectId);
+    public List<MediaFileDTO> getFilesByCourseId(UUID courseId) {
+        return mediaFileDAO.getFilesByCourseId(courseId);
     }
 
     public Optional<File> downloadFileById(UUID id) {

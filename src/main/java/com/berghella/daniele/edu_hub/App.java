@@ -11,11 +11,22 @@ public class App {
             config.jsonMapper(new JavalinJackson());
             config.bundledPlugins.enableCors(cors -> {
                 cors.addRule(it -> {
-//                    it.allowHost("example.com", "javalin.io");
-                    it.anyHost();
+                    it.allowHost("http://localhost:5173");
+//                    it.anyHost();
+//                    it.reflectClientOrigin = true;
+//                    it.allowCredentials = true;
                 });
             });
         }).start(8000);
+
+        app.options("/*", ctx -> {
+            ctx.header("Access-Control-Allow-Origin", "http://localhost:5173");
+            ctx.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+            ctx.header("Access-Control-Allow-Headers", "Authorization, Content-Type, Accept");
+            ctx.header("Access-Control-Expose-Headers", "Authorization");
+            ctx.status(204);
+        });
+
 
         AuthController authController = new AuthController();
         authController.registerRoutes(app);
@@ -43,5 +54,8 @@ public class App {
 
         MessageController messageController = new MessageController();
         messageController.registerRoutes(app);
+
+        SubjectCourseController subjectCourseController = new SubjectCourseController();
+        subjectCourseController.registerRoutes(app);
     }
 }
