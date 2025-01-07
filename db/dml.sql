@@ -25,16 +25,25 @@ INSERT INTO subject (id, name, description) VALUES
 
 -- Insert users
 INSERT INTO users (id, first_name, last_name, email, role, birthdate) VALUES
+('11cdcb49-2720-445f-b775-7210a5e07b09', 'Will', 'Benson', 'will.benson@example.com', 'STUDENT', '2025-01-07 20:59:44.855164'),
+('1cf73746-f15a-4d58-8049-a98244bd5ca2', 'Mike', 'Fraser', 'mike.fraser@example.com', 'STUDENT', '2025-01-07 20:31:12.49124'),
 ('6f030217-cdfc-4f19-9995-8f8b00655b2b', 'PROFILE', 'ADMIN', 'admin@example.com', 'ADMIN', '2024-12-29 20:04:30.753166'),
+('73677dde-e268-41e8-aa94-782d2827528b', 'Jill', 'Plum', 'jill.plum@example.com', 'STUDENT', '2025-01-07 20:58:02.652822'),
 ('ae5870e6-2fc5-4cb6-94e5-c668208854ea', 'Jane', 'Smith', 'jane.smith@example.com', 'TEACHER', '2024-12-24 19:20:18.812092'),
+('bdbede6d-6b0b-4755-ad73-65e07219ef34', 'Vinny', 'Felton', 'vinni.felton@example.com', 'STUDENT', '2025-01-07 21:01:47.274597'),
 ('cc5f4073-6fe7-4db0-8044-9a3be8cb37ca', 'Brody', 'Fox', 'brody.fox@example.com', 'STUDENT', '2025-01-06 13:00:26.211408');
 
 
 -- Insert auth
 INSERT INTO auth (id, user_id, email, password) VALUES
 ('4d6fdb07-73ab-4179-b908-38e122c2ffba', '6f030217-cdfc-4f19-9995-8f8b00655b2b', 'admin@example.com', '$2a$10$MLsQywJsN6UokGHWjb5KIeXOsmG6b6iruLB.wksCEfmuLpE0kVGUu'),
+('51cc1819-6053-440d-a594-bbe9887c1ec6', '11cdcb49-2720-445f-b775-7210a5e07b09', 'will.benson@example.com', '$2a$10$744iZqu.yhGvjf6AY.RUAOC.ttdEjdRJbXzICbx9I58NrirxqFCWi'),
 ('6c6b83c4-7905-46e3-901d-41b4b9424764', 'ae5870e6-2fc5-4cb6-94e5-c668208854ea', 'jane.smith@example.com', '$2a$10$k7F5nn/k8xar33ZpdWzbYubfFRKn0cOW3PNicCcWAqxlowmgHbmRu'),
-('cac0e6d3-7748-4217-acc7-cc5605bd0529', 'cc5f4073-6fe7-4db0-8044-9a3be8cb37ca', 'brody.fox@example.com', '$2a$10$uF80asFuFLdoujADFlLQQOXnuL8UQpvS09ZhKjBT.9GEsZOMjtJbS');
+('75f842a2-bc67-4247-bdbc-e126aca762e4', '1cf73746-f15a-4d58-8049-a98244bd5ca2', 'mike.fraser@example.com', '$2a$10$744iZqu.yhGvjf6AY.RUAOC.ttdEjdRJbXzICbx9I58NrirxqFCWi'),
+('cac0e6d3-7748-4217-acc7-cc5605bd0529', 'cc5f4073-6fe7-4db0-8044-9a3be8cb37ca', 'brody.fox@example.com', '$2a$10$uF80asFuFLdoujADFlLQQOXnuL8UQpvS09ZhKjBT.9GEsZOMjtJbS'),
+('de007cf8-3209-4204-a533-fa8914e3e2f2', '73677dde-e268-41e8-aa94-782d2827528b', 'jill.plum@example.com', '$2a$10$744iZqu.yhGvjf6AY.RUAOC.ttdEjdRJbXzICbx9I58NrirxqFCWi'),
+('e39c93a8-3cec-457b-8678-eb64c8e377f2', 'bdbede6d-6b0b-4755-ad73-65e07219ef34', 'vinni.felton@example.com', '$2a$10$744iZqu.yhGvjf6AY.RUAOC.ttdEjdRJbXzICbx9I58NrirxqFCWi');
+
 
 
 -- Insert subject_course

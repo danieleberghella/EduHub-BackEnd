@@ -62,11 +62,6 @@ EduHub is an experimental project designed to develop a web platform for a priva
 4. **Run the Application**
     - Start the backend service by following the instructions provided in the project code.
 
-### Testing
-You can log in using the default admin credentials:
-- **Email**: `admin@example.com`
-- **Password**: `123123123`
-
 ## Environmental Variables
 The following environment variables need to be set in the `.env` file:
 - `DB_PASSWORD`: The password for connecting to your PostgreSQL database.
